@@ -72,16 +72,31 @@
     <li class="comments-placeholder">
       No one has commented on this announcement yet.<br />You could be the first!
     </li>
-    <%= for comment <- @announcement.comments do %>
+    <%= for comment <- @comments do %>
       <%= render "_comment.html", comment: comment, current_user: @current_user %>
     <% end %>
   </ul>
 
   <div class="comment-new">
-    <%= ConstableWeb.CommentView.render "_form.html",
-      comment_changeset: @comment_changeset,
-      path: Routes.announcement_comment_path(@socket, :create, @announcement),
-      submit_text: gettext("Post Comment") %>
+    <%= f = form_for @comment_changeset, "#", phx_submit: "create-comment", id: "new-comment", class: "tbds-form tbds-block-stack tbds-block-stack--gap-4 comment-form" %>
+      <div>
+        <div class="comment-tab-list">
+          <button type="button" class="comment-tab-button comment-preview-text-button">Write</button>
+          <button type="button" class="comment-tab-button comment-preview-markdown-button">Preview</button>
+        </div>
+        <div class="comment-tab">
+          <%= textarea(
+            f,
+            :body,
+            class: "tbds-form__textarea comment-textarea mousetrap uploadable-input",
+            required: true,
+            placeholder: "Comment on this announcement"
+          ) %>
+          <div class="comment-body comment-preview"></div>
+          <%= submit gettext("Post Comment"), id: "submit-comment", class: "tbds-button" %>
+        </div>
+      </div>
+    </form>
   </div>
 </div>
 

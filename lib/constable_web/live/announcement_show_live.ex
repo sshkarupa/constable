@@ -2,6 +2,7 @@ defmodule ConstableWeb.AnnouncementShowLive do
   use ConstableWeb, :live_view
 
   alias Constable.{Announcement, Comment, Repo, Subscription, User}
+  alias Constable.Services.CommentCreator
 
   def render(assigns) do
     Phoenix.View.render(ConstableWeb.AnnouncementView, "show.html", assigns)
@@ -21,6 +22,7 @@ defmodule ConstableWeb.AnnouncementShowLive do
     socket =
       assign(socket,
         announcement: announcement,
+        comments: announcement.comments,
         comment_changeset: comment,
         subscription: subscription,
         users: Repo.all(User.active()),
@@ -30,4 +32,27 @@ defmodule ConstableWeb.AnnouncementShowLive do
 
     {:ok, socket}
   end
+
+  def handle_event("create-comment", %{"comment" => params}, socket) do
+    comment_params =
+      params
+      |> Map.put("user_id", socket.assigns.current_user.id)
+      |> Map.put("announcement_id", socket.assigns.announcement.id)
+
+    case CommentCreator.create(comment_params) do
+      {:ok, comment} ->
+        socket
+        |> update(:comments, fn comments -> comments ++ [comment] end)
+        |> assign(:comment_changeset, Comment.create_changeset(%{}))
+        |> noreply()
+
+      {:error, changeset} ->
+        socket
+        |> put_flash(:error, gettext("Comment was invalid"))
+        |> assign(:comment_changeset, changeset)
+        |> noreply()
+    end
+  end
+
+  defp noreply(socket), do: {:noreply, socket}
 end
