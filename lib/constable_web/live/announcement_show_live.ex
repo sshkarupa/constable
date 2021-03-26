@@ -13,18 +13,12 @@ defmodule ConstableWeb.AnnouncementShowLive do
     comment = Comment.create_changeset(%{})
     current_user = Repo.get(User.active(), user_id)
 
-    subscription =
-      Repo.get_by(Subscription,
-        announcement_id: announcement.id,
-        user_id: current_user.id
-      )
-
     socket =
       assign(socket,
         announcement: announcement,
         comments: announcement.comments,
         comment_changeset: comment,
-        subscription: subscription,
+        subscription: get_subscription(announcement, current_user),
         users: Repo.all(User.active()),
         current_user: current_user,
         page_title: announcement.title
@@ -34,16 +28,19 @@ defmodule ConstableWeb.AnnouncementShowLive do
   end
 
   def handle_event("create-comment", %{"comment" => params}, socket) do
+    %{announcement: announcement, current_user: current_user} = socket.assigns
+
     comment_params =
       params
-      |> Map.put("user_id", socket.assigns.current_user.id)
-      |> Map.put("announcement_id", socket.assigns.announcement.id)
+      |> Map.put("user_id", current_user.id)
+      |> Map.put("announcement_id", announcement.id)
 
     case CommentCreator.create(comment_params) do
       {:ok, comment} ->
         socket
         |> update(:comments, fn comments -> comments ++ [comment] end)
         |> assign(:comment_changeset, Comment.create_changeset(%{}))
+        |> assign(:subscription, get_subscription(announcement, current_user))
         |> noreply()
 
       {:error, changeset} ->
@@ -52,6 +49,13 @@ defmodule ConstableWeb.AnnouncementShowLive do
         |> assign(:comment_changeset, changeset)
         |> noreply()
     end
+  end
+
+  defp get_subscription(announcement, user) do
+    Repo.get_by(Subscription,
+      announcement_id: announcement.id,
+      user_id: user.id
+    )
   end
 
   defp noreply(socket), do: {:noreply, socket}

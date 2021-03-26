@@ -44,4 +44,18 @@ defmodule ConstableWeb.AnnouncementShowLiveTest do
 
     assert rendered =~ "Comment was invalid"
   end
+
+  test "commenting automatically subscribes user to announcement", %{conn: conn} do
+    announcement = insert(:announcement)
+    user = insert(:user)
+    session = %{"id" => announcement.id, "current_user_id" => user.id}
+
+    {:ok, view, _html} = live_isolated(conn, AnnouncementShowLive, session: session)
+
+    view
+    |> form("#new-comment", comment: %{body: "This is great!"})
+    |> render_submit()
+
+    assert has_element?(view, "[data-role='subscription-button']", "Subscribed to thread")
+  end
 end
