@@ -1,5 +1,5 @@
 defmodule ConstableWeb.NewCommentTest do
-  use ConstableWeb.AcceptanceCase
+  use ConstableWeb.AcceptanceCase, async: false
 
   test "new comments are displayed in real time", %{session: session} do
     {:ok, other_session} = Wallaby.start_session()

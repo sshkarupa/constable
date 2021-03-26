@@ -4,7 +4,7 @@
       <%= for interest <- @announcement.interests do %>
         <%= link(
           interest.name,
-          to: Routes.interest_path(@conn, :show, interest),
+          to: Routes.interest_path(@socket, :show, interest),
           class: "tbds-badge tbds-margin-inline-end-1"
         ) %>
       <% end %>
@@ -14,12 +14,12 @@
     <%= @announcement.title %>
     <%= if @announcement.user_id == @current_user.id do %>
       <small class="inline-action">
-        <%= link "edit", to: Routes.announcement_path(@conn, :edit, @announcement), data: [role: "edit"] %>
+        <%= link "edit", to: Routes.announcement_path(@socket, :edit, @announcement), data: [role: "edit"] %>
       </small>
       <small class="inline-action">
         <%= link(
             "delete",
-            to: Routes.announcement_path(@conn, :delete, @announcement),
+            to: Routes.announcement_path(@socket, :delete, @announcement),
             method: :delete,
             data: [confirm: gettext("Really delete this announcement?"), role: "delete"]
         ) %>
@@ -39,7 +39,7 @@
         >
       </div>
       <div class="tbds-media__body">
-        <%= link @announcement.user.name, to: Routes.announcement_path(@conn, :index, user_id: @announcement.user_id), class: "author" %>
+        <%= link @announcement.user.name, to: Routes.announcement_path(@socket, :index, user_id: @announcement.user_id), class: "author" %>
 
         <div class="announcement-metadata">
           <%= gettext "announced " %>
@@ -51,7 +51,7 @@
       <%= if @subscription do %>
         <%= render "_unsubscribe_button.html", announcement_id: @announcement.id %>
       <% else %>
-        <%= link to: Routes.announcement_subscription_path(@conn, :create, @announcement),
+        <%= link to: Routes.announcement_subscription_path(@socket, :create, @announcement),
           method: :post,
           class: "tbds-button button-secondary" do %>
           <svg class="tbds-button__icon tbds-button__icon--start">
@@ -73,14 +73,14 @@
       No one has commented on this announcement yet.<br />You could be the first!
     </li>
     <%= for comment <- @announcement.comments do %>
-      <%= render "_comment.html", comment: comment, conn: @conn, current_user: @current_user %>
+      <%= render "_comment.html", comment: comment, conn: @socket, current_user: @current_user %>
     <% end %>
   </ul>
 
   <div class="comment-new">
     <%= ConstableWeb.CommentView.render "_form.html",
       comment_changeset: @comment_changeset,
-      path: Routes.announcement_comment_path(@conn, :create, @announcement),
+      path: Routes.announcement_comment_path(@socket, :create, @announcement),
       submit_text: gettext("Post Comment") %>
   </div>
 </div>
