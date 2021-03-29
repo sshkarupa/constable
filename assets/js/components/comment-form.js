@@ -1,12 +1,7 @@
 import Mousetrap from 'mousetrap';
-import socket from '../socket';
 import { setupImageUploader } from '../lib/textarea-image-uploader';
 import { markedWithSyntax } from '../lib/syntax-highlighting';
 import { autocompleteUsers } from './user-autocomplete';
-
-const resetForm = (form) => form.reset();
-const disableForm = (form) => form.children(':input').attr('disabled', 'disabled');
-const enableForm = (form) => form.children(':input').removeAttr('disabled');
 
 const SAVE_SHORTCUT = [ 'mod+enter' ];
 
@@ -121,16 +116,7 @@ export const setupNewForm = (usersForAutoComplete) => {
     event.preventDefault();
     const form = $(this);
 
-    $.ajax({
-      type: 'POST',
-      url: form.attr('action'),
-      data: form.serialize(),
-      beforeSend: () => disableForm(form),
-    }).done(() => {
-      resetForm(form[0]);
-      enableForm(form);
-      clearSavedCommentChanges();
-      resetPreview();
-    });
+    clearSavedCommentChanges();
+    resetPreview();
   });
 };
