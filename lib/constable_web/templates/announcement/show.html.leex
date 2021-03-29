@@ -68,7 +68,7 @@
   </div>
 
   <h2 class="tbds-margin-block-end-6"><%= gettext "Comments" %></h2>
-  <ul class="tbds-block-stack tbds-block-stack--bordered tbds-block-stack--gap-6 comments-list">
+  <ul id="comments-list" class="tbds-block-stack tbds-block-stack--bordered tbds-block-stack--gap-6 comments-list" phx-hook="SyntaxHighlight">
     <li class="comments-placeholder">
       No one has commented on this announcement yet.<br />You could be the first!
     </li>
@@ -103,6 +103,5 @@
 <script>
   (function() {
     window.constable.commentForm.setupNewForm(<%= raw user_autocomplete_json(@users) %>);
-    window.constable.syntaxHighlighting.highlightSyntax('.comments-list');
   })()
 </script>
