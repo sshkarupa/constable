@@ -78,13 +78,13 @@
   </ul>
 
   <div class="comment-new">
-    <%= f = form_for @comment_changeset, "#", phx_submit: "create-comment", id: "new-comment", class: "tbds-form tbds-block-stack tbds-block-stack--gap-4 comment-form" %>
+    <%= f = form_for @comment_changeset, "#", phx_submit: "create-comment", id: "new-comment", class: "tbds-form tbds-block-stack tbds-block-stack--gap-4 comment-form", phx_hook: "CommentPreview" %>
       <div>
         <div class="comment-tab-list">
           <button type="button" class="comment-tab-button comment-preview-text-button">Write</button>
           <button type="button" class="comment-tab-button comment-preview-markdown-button">Preview</button>
         </div>
-        <div class="comment-tab">
+        <div class="comment-tab comment-tab-button--active">
           <%= textarea(
             f,
             :body,
@@ -104,6 +104,6 @@
 
 <script>
   (function() {
-    window.constable.commentForm.setupNewForm(<%= raw user_autocomplete_json(@users) %>);
+    window.constable.userAutocomplete.autocompleteUsers('.comment-textarea', <%= raw user_autocomplete_json(@users) %>);
   })()
 </script>

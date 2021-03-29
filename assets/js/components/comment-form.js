@@ -1,14 +1,12 @@
 import Mousetrap from 'mousetrap';
 import { markedWithSyntax } from '../lib/syntax-highlighting';
-import { autocompleteUsers } from './user-autocomplete';
 
 const SAVE_SHORTCUT = [ 'mod+enter' ];
 
-const initializeForm = (usersForAutoComplete) => {
+const initializeForm = () => {
   watchBody();
   watchCommentToggles();
   toggleWrite();
-  autocompleteUsers('.comment-textarea', usersForAutoComplete);
 
   Mousetrap.bind(SAVE_SHORTCUT, () => {
     const $form = $('.comment-form');
@@ -102,12 +100,12 @@ function resetPreview() {
   toggleWrite();
 }
 
-export const setupEditForm = (usersForAutoComplete) => {
-  initializeForm(usersForAutoComplete);
+export const setupEditForm = () => {
+  initializeForm();
 };
 
-export const setupNewForm = (usersForAutoComplete) => {
-  initializeForm(usersForAutoComplete);
+export const setupNewForm = () => {
+  initializeForm();
   initializeNewComment();
 
   $('.comment-form').on('submit', function(event) {
