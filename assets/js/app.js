@@ -32,6 +32,7 @@ import * as announcementForm from './components/announcement-form';
 import * as announcementFormMobile from './components/announcement-form-mobile';
 import * as textareaImageUploader from './lib/textarea-image-uploader';
 import * as userAutocomplete from './components/user-autocomplete';
+import { setupImageUploader } from './lib/textarea-image-uploader';
 
 import {Socket} from 'phoenix';
 import LiveSocket from 'phoenix_live_view';
@@ -39,6 +40,11 @@ let Hooks = {};
 Hooks.SyntaxHighlight = {
   mounted() {
     syntaxHighlighting.highlightSyntax(`#${this.el.id}`);
+  },
+};
+Hooks.ImageUploader = {
+  mounted() {
+    setupImageUploader(`#${this.el.id}`);
   },
 };
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute('content');

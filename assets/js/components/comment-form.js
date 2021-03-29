@@ -1,5 +1,4 @@
 import Mousetrap from 'mousetrap';
-import { setupImageUploader } from '../lib/textarea-image-uploader';
 import { markedWithSyntax } from '../lib/syntax-highlighting';
 import { autocompleteUsers } from './user-autocomplete';
 
@@ -9,7 +8,6 @@ const initializeForm = (usersForAutoComplete) => {
   watchBody();
   watchCommentToggles();
   toggleWrite();
-  setupImageUploader('#comment_body');
   autocompleteUsers('.comment-textarea', usersForAutoComplete);
 
   Mousetrap.bind(SAVE_SHORTCUT, () => {

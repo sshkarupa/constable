@@ -91,7 +91,8 @@
             class: "tbds-form__textarea comment-textarea mousetrap uploadable-input",
             id: "comment_body",
             required: true,
-            placeholder: "Comment on this announcement"
+            placeholder: "Comment on this announcement",
+            phx_hook: "ImageUploader"
           ) %>
           <div class="comment-body comment-preview"></div>
           <%= submit gettext("Post Comment"), id: "submit-comment", class: "tbds-button" %>
