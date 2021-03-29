@@ -53,6 +53,8 @@ defmodule Constable.Services.CommentCreator do
   end
 
   defp broadcast(comment) do
+    Constable.PubSub.broadcast_new_comment(comment)
+
     ConstableWeb.Endpoint.broadcast!(
       "update",
       "comment:add",

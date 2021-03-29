@@ -4,6 +4,7 @@ defmodule Constable.Services.CommentCreatorTest do
   alias Constable.Emails
   alias ConstableWeb.Api.CommentView
   alias Constable.Comment
+  alias Constable.PubSub
   alias Constable.Services.CommentCreator
   alias Constable.Subscription
 
@@ -21,6 +22,20 @@ defmodule Constable.Services.CommentCreatorTest do
     assert comment.user_id == announcement.user_id
     assert comment.announcement_id == announcement.id
     assert comment.body == "Foo"
+  end
+
+  test "broadcasts the new comment" do
+    announcement = insert(:announcement)
+    PubSub.subscribe_to_announcement(announcement)
+
+    CommentCreator.create(%{
+      user_id: announcement.user.id,
+      body: "Foo",
+      announcement_id: announcement.id
+    })
+
+    assert_receive {:new_comment, comment}
+    assert %{body: "Foo"} = comment
   end
 
   test "sends an update over a channel" do
