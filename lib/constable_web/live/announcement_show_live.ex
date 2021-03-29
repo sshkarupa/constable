@@ -37,9 +37,8 @@ defmodule ConstableWeb.AnnouncementShowLive do
       |> Map.put("announcement_id", announcement.id)
 
     case CommentCreator.create(comment_params) do
-      {:ok, comment} ->
+      {:ok, _comment} ->
         socket
-        |> update(:comments, fn comments -> comments ++ [comment] end)
         |> assign(:comment_changeset, Comment.create_changeset(%{}))
         |> assign(:subscription, get_subscription(announcement, current_user))
         |> noreply()
