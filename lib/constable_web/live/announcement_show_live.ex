@@ -1,7 +1,7 @@
 defmodule ConstableWeb.AnnouncementShowLive do
   use ConstableWeb, :live_view
 
-  alias Constable.{Announcement, Comment, Repo, Subscription, User}
+  alias Constable.{Announcement, Comment, PubSub, Repo, Subscription, User}
   alias Constable.Services.CommentCreator
 
   def render(assigns) do
@@ -10,6 +10,7 @@ defmodule ConstableWeb.AnnouncementShowLive do
 
   def mount(_, %{"id" => id, "current_user_id" => user_id}, socket) do
     announcement = Repo.get!(Announcement.with_announcement_list_assocs(), id)
+    if connected?(socket), do: PubSub.subscribe_to_announcement(announcement)
     comment = Comment.create_changeset(%{})
     current_user = Repo.get(User.active(), user_id)
 
@@ -49,6 +50,12 @@ defmodule ConstableWeb.AnnouncementShowLive do
         |> assign(:comment_changeset, changeset)
         |> noreply()
     end
+  end
+
+  def handle_info({:new_comment, comment}, socket) do
+    socket
+    |> update(:comments, fn comments -> comments ++ [comment] end)
+    |> noreply()
   end
 
   defp get_subscription(announcement, user) do

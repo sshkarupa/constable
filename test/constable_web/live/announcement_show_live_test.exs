@@ -59,10 +59,6 @@ defmodule ConstableWeb.AnnouncementShowLiveTest do
     assert has_element?(view, "[data-role='subscription-button']", "Subscribed to thread")
   end
 
-  # this is the next test to add
-  # Questions:
-  # - Should we replace the LiveHtmlChannel?
-  # - Why do we have an UpdateChannel?
   test "user can see new comments in real-time", %{conn: conn} do
     announcement = insert(:announcement)
     user = insert(:user)
@@ -73,6 +69,6 @@ defmodule ConstableWeb.AnnouncementShowLiveTest do
     comment = insert(:comment, announcement: announcement)
     Constable.PubSub.broadcast_new_comment(comment)
 
-    assert has_element?(view, ".comment", comment.body)
+    assert has_element?(view, ".comment-body", comment.body)
   end
 end
